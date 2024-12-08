@@ -1,5 +1,6 @@
 mod util;
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy)]
 struct Point {
@@ -44,6 +45,9 @@ impl Board {
         self.lines.len()
     }
     // Is the point within the bounds of the board?
+    // Points are usize so can't be negative,
+    // if they wrap they will be huge and thus outside by
+    // this logic anyway
     fn within(&self, point: &Point) -> bool {
         if point.y >= self.height() ||
             point.x >= self.width() 
@@ -89,8 +93,9 @@ impl Board {
 fn main() {
     println!("AoC 2024: Day 8");
 
-    let lines = util::get_lines_from_file("input/day8-test.txt");
-    // let lines = util::get_lines_from_file("input/day8.txt");
+    // let lines = util::get_lines_from_file("input/day8-test.txt");
+    // let lines = util::get_lines_from_file("input/day8-test1.txt");
+    let lines = util::get_lines_from_file("input/day8.txt");
     
     let board = Board { lines };
 
@@ -108,21 +113,31 @@ fn main() {
 
     let symbols = board.all_symbols();
     
-    // for testing only, will actually loop on this
-    // let a = symbols.get(&'A').unwrap();
-    // for p in a {
-    //     for pp in a {
-    //         // println!("{:?} -> {:?}", p, pp);
-    //         if p != pp {
-    //             dbg!(antinodes(&p, &pp));
-    //             return;
-    //         }
-    //     }
-    // }
+    let mut all_antinodes: Vec<Point> = Vec::new();
 
-    let p1 = Point::new(4, 3);
-    let p2 = Point::new(8, 4);
-    dbg!(antinodes(&board, &p1, &p2));
+    for (key, a) in symbols.iter() {
+        for p in a {
+            for pp in a {
+                // println!("{:?} -> {:?}", p, pp);
+                if p != pp {
+                    let mut ans = antinodes(&board, &p, &pp);
+                    all_antinodes.append(&mut ans);
+                }
+            }
+        }
+    }
+
+    let mut test: HashSet<Point> = HashSet::new();
+    for v in all_antinodes {
+        test.insert(v);
+    }
+
+    println!("{}", test.len());
+    // dbg!(test);
+
+    // let p1 = Point::new(4, 3);
+    // let p2 = Point::new(8, 4);
+    // dbg!(antinodes(&board, &p1, &p2));
 }
 
 fn antinodes(board: &Board, p1: &Point, p2: &Point) -> Vec<Point> {
@@ -135,16 +150,43 @@ fn antinodes(board: &Board, p1: &Point, p2: &Point) -> Vec<Point> {
     // dbg!(dX, dY);
 
     // generate all the new points from both ends
-    antinodes.push(Point::newi32(p1.x as i32 + dX, p1.y as i32 + dY));
-    antinodes.push(Point::newi32(p1.x as i32 - dX, p1.y as i32 - dY));
-    antinodes.push(Point::newi32(p2.x as i32 + dX, p2.y as i32 + dY));
-    antinodes.push(Point::newi32(p2.x as i32 - dX, p2.y as i32 - dY));
+    // continue + until off the board
+    let mut x = p1.x as i32;
+    let mut y = p1.y as i32;
+    loop {
+        x += dX;
+        y += dY;
+        let new_point = Point::newi32(x, y);
+        if !board.within(&new_point) {
+            break;
+        }
+        antinodes.push(new_point);
+    }
 
-    // drop the points that are p1 or p2
+    // continue - until off the board
+    let mut x = p1.x as i32;
+    let mut y = p1.y as i32;
+    loop {
+        x -= dX;
+        y -= dY;
+        let new_point = Point::newi32(x, y);
+        if !board.within(&new_point) {
+            break;
+        }
+        antinodes.push(new_point);
+    }
+
+    // antinodes.push(Point::newi32(p1.x as i32 - dX, p1.y as i32 - dY));
+
+    // antinodes.push(Point::newi32(p2.x as i32 + dX, p2.y as i32 + dY));
+    // antinodes.push(Point::newi32(p2.x as i32 - dX, p2.y as i32 - dY));
+
+    // drop the points that are p1 or p2 or outside the board
     let out: Vec<_> = antinodes
         .into_iter()
-        .filter(|&x| x != *p1 && x != *p2)
+        // .filter(|&x| x != *p1 && x != *p2 && board.within(&x))
         .collect();
 
+    // dbg!(&out);
     out
 }
