@@ -11,11 +11,9 @@ fn main() {
 
     for line in &lines {
         let parts: Vec<&str> = line.split_whitespace().collect();
-        
+
         // convert them to actual numbers
-        let numbers: Vec<i32> = parts.iter()
-            .map(|&s| s.parse::<i32>().unwrap())
-            .collect();
+        let numbers: Vec<i32> = parts.iter().map(|&s| s.parse::<i32>().unwrap()).collect();
 
         l1.push(numbers[0]);
         l2.push(numbers[1]);
@@ -33,7 +31,6 @@ fn main() {
 
     println!("Part 1: {total}");
 
-
     // Part 2
     let l2_freq = util::count_frequencies(&l2);
     let mut similarity_score: i32 = 0;
@@ -46,5 +43,4 @@ fn main() {
     }
 
     println!("Part 2 (Total Similarity Score): {similarity_score}");
-
 }

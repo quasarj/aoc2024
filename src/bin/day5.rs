@@ -43,7 +43,6 @@ fn main() {
     // let lines = util::get_lines_from_file("input/day5-test.txt");
     let lines = util::get_lines_from_file("input/day5.txt");
 
-
     let mut rules: Vec<Rule> = Vec::new();
     let mut updates: Vec<Update> = Vec::new();
 
@@ -127,17 +126,21 @@ fn parse_rule(s: String) -> Rule {
     }
 }
 
-
 #[test]
 fn function_name_test() {
     let update: Update = vec![97, 13, 75, 29, 47];
     let rules: Vec<Rule> = vec![
-        Rule { before: 97, after: 13 },
-        Rule { before: 29, after: 13 },
+        Rule {
+            before: 97,
+            after: 13,
+        },
+        Rule {
+            before: 29,
+            after: 13,
+        },
     ];
 
     for rule in &rules {
         rule.fix(&mut update.clone());
     }
-    
 }

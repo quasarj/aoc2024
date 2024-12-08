@@ -9,10 +9,7 @@ struct Point {
 
 impl Point {
     fn new(x: usize, y: usize) -> Self {
-        Point {
-            x,
-            y
-        }
+        Point { x, y }
     }
 }
 
@@ -30,9 +27,7 @@ impl Direction {
         let x = point.x;
         let y = point.y;
         match self {
-            Direction::South => {
-                Some(Point::new(x,     y + 1))
-            }
+            Direction::South => Some(Point::new(x, y + 1)),
             Direction::North => {
                 if y == 0 {
                     None
@@ -40,9 +35,7 @@ impl Direction {
                     Some(Point::new(x, y - 1))
                 }
             }
-            Direction::East => {
-                Some(Point::new(x + 1, y))
-            }
+            Direction::East => Some(Point::new(x + 1, y)),
             Direction::West => {
                 if x == 0 {
                     None
@@ -68,7 +61,7 @@ struct Guard {
     pos: Point,
     start: Point,
     direction: Direction,
-    history: HashSet<Point>
+    history: HashSet<Point>,
 }
 impl Guard {
     fn new(starting_pos: Point, direction: Direction) -> Self {
@@ -76,7 +69,7 @@ impl Guard {
             pos: starting_pos.clone(),
             start: starting_pos.clone(),
             direction: direction,
-            history: HashSet::from([starting_pos.clone()])
+            history: HashSet::from([starting_pos.clone()]),
         }
     }
     fn step(&mut self, board: &Board) -> bool {
@@ -87,7 +80,7 @@ impl Guard {
                 if val == '#' {
                     self.direction = self.direction.turn();
                     // panic!("changing direction");
-                    // dbg!(&self); 
+                    // dbg!(&self);
                 } else {
                     // If so, update the Guard (pos, history)
                     self.history.insert(new_pos.clone());
@@ -111,7 +104,6 @@ struct Board {
 
 impl Board {
     fn find_guard(&self) -> Guard {
-
         fn is_guard(p: Option<char>) -> Option<Direction> {
             if let Some(c) = p {
                 match c {
@@ -119,7 +111,7 @@ impl Board {
                     '^' => Some(Direction::North),
                     '<' => Some(Direction::West),
                     'v' => Some(Direction::South),
-                    _ => None
+                    _ => None,
                 }
             } else {
                 None
@@ -170,7 +162,7 @@ impl Board {
             let y = point.y;
 
             let s = &mut self.lines[y];
-            s.replace_range(x..x+1, &val.to_string());
+            s.replace_range(x..x + 1, &val.to_string());
         }
     }
 }
@@ -187,20 +179,18 @@ fn main() {
     let mut guard = board.find_guard();
     // dbg!(&guard);
 
-
-
     // Part 1
     loop {
         // dbg!(&guard);
         if !guard.step(&board) {
-            break
+            break;
         }
     }
 
     println!("Part 1, visited squares: {}", guard.history.len());
 
     // Part 2
-    // Using the history of the guard ONLY, 
+    // Using the history of the guard ONLY,
     // try putting a single extra # at each location (one at a time)
     // and then test to see if a new guard gets stuck in a loop
     // let mut b2 = board.clone();
@@ -213,7 +203,7 @@ fn main() {
     fn detect_loop(board: &Board, guard: &mut Guard) -> bool {
         // idea: keep track of the last len of history
         // if it hasn't grown after 3 moves, it's a loop?
-        // 3 might not be enough due to types of backgracking, 
+        // 3 might not be enough due to types of backgracking,
         // adjust as necessary
         let mut loop_counter = 0;
         let mut last_history_len = 0;
@@ -221,7 +211,7 @@ fn main() {
             loop_counter += 1;
             // dbg!(&guard);
             if !guard.step(&board) {
-                break
+                break;
             }
 
             if loop_counter % 1000 == 0 {
@@ -237,7 +227,6 @@ fn main() {
         false // if we get here, there was no loop
     }
 
-
     let mut num_loops = 0;
 
     // loop over all the spots the first guard went
@@ -248,7 +237,7 @@ fn main() {
         let mut new_board = board.clone();
         new_board.set(&point, '#');
         let mut new_guard = new_board.find_guard();
-        
+
         let is_loop = detect_loop(&new_board, &mut new_guard);
         if is_loop {
             num_loops += 1

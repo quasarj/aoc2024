@@ -20,8 +20,12 @@ fn main() {
                 // println!("Full match: {}", full_match.as_str());
 
                 if let Some(_x_match) = capture.get(1) {
-                    let x = capture.get(1).map_or(0, |m| m.as_str().parse::<i32>().unwrap());
-                    let y = capture.get(2).map_or(0, |m| m.as_str().parse::<i32>().unwrap());
+                    let x = capture
+                        .get(1)
+                        .map_or(0, |m| m.as_str().parse::<i32>().unwrap());
+                    let y = capture
+                        .get(2)
+                        .map_or(0, |m| m.as_str().parse::<i32>().unwrap());
 
                     total += x * y;
                     if active {

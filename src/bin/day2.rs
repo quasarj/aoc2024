@@ -10,11 +10,9 @@ fn main() {
 
     for line in &lines {
         let parts: Vec<&str> = line.split_whitespace().collect();
-        
+
         // convert them to actual numbers
-        let numbers: Vec<i32> = parts.iter()
-            .map(|&s| s.parse::<i32>().unwrap())
-            .collect();
+        let numbers: Vec<i32> = parts.iter().map(|&s| s.parse::<i32>().unwrap()).collect();
 
         if is_safe(&numbers) {
             num_safe += 1;
@@ -42,19 +40,17 @@ fn main() {
 
     println!("Part 1, number safe: {num_safe}");
     println!("Part 2, number safe: {any_safe}");
-
 }
 
 fn is_safe(report: &Vec<i32>) -> bool {
-
     // loop over the elements and compare to eachother
-    let res: Vec<_> = report.windows(2)
+    let res: Vec<_> = report
+        .windows(2)
         .map(|window| window[1] - window[0])
         .collect();
 
     // test that all differences are the same (negative or positive)
-    let is_mixed = res.iter().any(|&x| x > 0) && 
-                   res.iter().any(|&x| x < 0);
+    let is_mixed = res.iter().any(|&x| x > 0) && res.iter().any(|&x| x < 0);
 
     if is_mixed {
         return false;

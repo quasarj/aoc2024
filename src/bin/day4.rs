@@ -17,13 +17,16 @@ impl Direction {
         let x = point.x;
         let y = point.y;
         match self {
-            Direction::South =>     Point::new(x,     y + 1),
+            Direction::South => Point::new(x, y + 1),
             Direction::SouthEast => Point::new(x + 1, y + 1),
-            Direction::East =>      Point::new(x + 1, y),
+            Direction::East => Point::new(x + 1, y),
             Direction::NorthEast => Point::new(x + 1, y.checked_sub(1).unwrap_or(9999)),
-            Direction::North =>     Point::new(x,     y.checked_sub(1).unwrap_or(9999)),
-            Direction::NorthWest => Point::new(x.checked_sub(1).unwrap_or(9999), y.checked_sub(1).unwrap_or(9999)),
-            Direction::West =>      Point::new(x.checked_sub(1).unwrap_or(9999), y),
+            Direction::North => Point::new(x, y.checked_sub(1).unwrap_or(9999)),
+            Direction::NorthWest => Point::new(
+                x.checked_sub(1).unwrap_or(9999),
+                y.checked_sub(1).unwrap_or(9999),
+            ),
+            Direction::West => Point::new(x.checked_sub(1).unwrap_or(9999), y),
             Direction::SouthWest => Point::new(x.checked_sub(1).unwrap_or(9999), y + 1),
         }
     }
@@ -36,10 +39,7 @@ struct Point {
 }
 impl Point {
     fn new(x: usize, y: usize) -> Self {
-        Point {
-            x,
-            y
-        }
+        Point { x, y }
     }
 }
 
@@ -122,10 +122,10 @@ fn search_x(board: &Board, point: &Point) -> usize {
     // M.S
     // .A.
     // M.S
-    if l_in_d(board, point, Direction::NorthWest, 'M') 
-    && l_in_d(board, point, Direction::NorthEast, 'S') 
-    && l_in_d(board, point, Direction::SouthWest, 'M') 
-    && l_in_d(board, point, Direction::SouthEast, 'S') 
+    if l_in_d(board, point, Direction::NorthWest, 'M')
+        && l_in_d(board, point, Direction::NorthEast, 'S')
+        && l_in_d(board, point, Direction::SouthWest, 'M')
+        && l_in_d(board, point, Direction::SouthEast, 'S')
     {
         // println!("type a");
         return 1;
@@ -134,10 +134,10 @@ fn search_x(board: &Board, point: &Point) -> usize {
     // M.M
     // .A.
     // S.S
-    if l_in_d(board, point, Direction::NorthWest, 'M') 
-    && l_in_d(board, point, Direction::NorthEast, 'M') 
-    && l_in_d(board, point, Direction::SouthWest, 'S') 
-    && l_in_d(board, point, Direction::SouthEast, 'S') 
+    if l_in_d(board, point, Direction::NorthWest, 'M')
+        && l_in_d(board, point, Direction::NorthEast, 'M')
+        && l_in_d(board, point, Direction::SouthWest, 'S')
+        && l_in_d(board, point, Direction::SouthEast, 'S')
     {
         // println!("type b");
         return 1;
@@ -146,10 +146,10 @@ fn search_x(board: &Board, point: &Point) -> usize {
     // S.M
     // .A.
     // S.M
-    if l_in_d(board, point, Direction::NorthWest, 'S') 
-    && l_in_d(board, point, Direction::NorthEast, 'M') 
-    && l_in_d(board, point, Direction::SouthWest, 'S') 
-    && l_in_d(board, point, Direction::SouthEast, 'M') 
+    if l_in_d(board, point, Direction::NorthWest, 'S')
+        && l_in_d(board, point, Direction::NorthEast, 'M')
+        && l_in_d(board, point, Direction::SouthWest, 'S')
+        && l_in_d(board, point, Direction::SouthEast, 'M')
     {
         // println!("type c");
         return 1;
@@ -158,10 +158,10 @@ fn search_x(board: &Board, point: &Point) -> usize {
     // S.S
     // .A.
     // M.M
-    if l_in_d(board, point, Direction::NorthWest, 'S') 
-    && l_in_d(board, point, Direction::NorthEast, 'S') 
-    && l_in_d(board, point, Direction::SouthWest, 'M') 
-    && l_in_d(board, point, Direction::SouthEast, 'M') 
+    if l_in_d(board, point, Direction::NorthWest, 'S')
+        && l_in_d(board, point, Direction::NorthEast, 'S')
+        && l_in_d(board, point, Direction::SouthWest, 'M')
+        && l_in_d(board, point, Direction::SouthEast, 'M')
     {
         // println!("type d");
         return 1;
@@ -187,14 +187,13 @@ fn l_in_d(board: &Board, point: &Point, direction: Direction, letter: char) -> b
 // Search for XMAS in all directions, return count found
 fn search(board: &Board, point: &Point) -> usize {
     search_direction(board, point, Direction::North)
-    + search_direction(board, point, Direction::South)
-    + search_direction(board, point, Direction::East)
-    + search_direction(board, point, Direction::West)
-    + search_direction(board, point, Direction::NorthEast)
-    + search_direction(board, point, Direction::NorthWest)
-    + search_direction(board, point, Direction::SouthEast)
-    + search_direction(board, point, Direction::SouthWest)
-
+        + search_direction(board, point, Direction::South)
+        + search_direction(board, point, Direction::East)
+        + search_direction(board, point, Direction::West)
+        + search_direction(board, point, Direction::NorthEast)
+        + search_direction(board, point, Direction::NorthWest)
+        + search_direction(board, point, Direction::SouthEast)
+        + search_direction(board, point, Direction::SouthWest)
 }
 
 // search in one direction

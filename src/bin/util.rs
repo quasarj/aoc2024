@@ -1,6 +1,6 @@
 #![allow(dead_code)]
-use std::fs::read_to_string;
 use std::collections::HashMap;
+use std::fs::read_to_string;
 
 pub fn get_lines_from_file(filename: &str) -> Vec<String> {
     let input_file = read_to_string(filename).unwrap();
