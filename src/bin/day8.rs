@@ -13,7 +13,10 @@ impl Point {
         Point { x, y }
     }
     fn newi32(x: i32, y: i32) -> Self {
-        Point { x: x as usize, y: y as usize }
+        Point {
+            x: x as usize,
+            y: y as usize,
+        }
     }
 }
 
@@ -49,9 +52,7 @@ impl Board {
     // if they wrap they will be huge and thus outside by
     // this logic anyway
     fn within(&self, point: &Point) -> bool {
-        if point.y >= self.height() ||
-            point.x >= self.width() 
-        {
+        if point.y >= self.height() || point.x >= self.width() {
             false
         } else {
             true
@@ -96,7 +97,7 @@ fn main() {
     // let lines = util::get_lines_from_file("input/day8-test.txt");
     // let lines = util::get_lines_from_file("input/day8-test1.txt");
     let lines = util::get_lines_from_file("input/day8.txt");
-    
+
     let board = Board { lines };
 
     // idea:
@@ -112,7 +113,7 @@ fn main() {
     dbg!(&board);
 
     let symbols = board.all_symbols();
-    
+
     let mut all_antinodes: Vec<Point> = Vec::new();
 
     for (key, a) in symbols.iter() {
