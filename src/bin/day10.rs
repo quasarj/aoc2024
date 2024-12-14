@@ -118,7 +118,7 @@ impl Board {
         if let Some(val) = self.get(point) {
             match val.to_string().parse::<u32>() {
                 Ok(rval) => Some(rval),
-                _ => None
+                _ => None,
             }
         } else {
             None
@@ -174,7 +174,6 @@ fn main() {
         .into_iter()
         .filter(|p| map.get(p) == Some('0'))
         .collect();
-
 
     let mut total_score = 0;
     let mut total_rating = 0;
