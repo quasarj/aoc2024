@@ -1,6 +1,6 @@
 mod util;
 
-// We might have to make this bigger, so 
+// We might have to make this bigger, so
 // start with a type alias
 type Int = i64;
 
@@ -47,8 +47,13 @@ impl Prize {
     }
     fn solve_with_math(&self) -> Option<Int> {
         let maybe_solution = solve_eq(
-            self.a.0, self.b.0, self.prize.0,
-            self.a.1, self.b.1, self.prize.1);
+            self.a.0,
+            self.b.0,
+            self.prize.0,
+            self.a.1,
+            self.b.1,
+            self.prize.1,
+        );
 
         if let Some(solution) = maybe_solution {
             Some(cost(&solution))
@@ -57,13 +62,13 @@ impl Prize {
         }
     }
     fn solve(&self) -> Option<Int> {
-
         let mut solutions: Vec<(Int, Int)> = Vec::new();
         // testing only x here
         for i in 0..=100 {
             for j in 0..=100 {
-                if self.a.0 * i + self.b.0 * j == self.prize.0 
-                && self.a.1 * i + self.b.1 * j == self.prize.1 {
+                if self.a.0 * i + self.b.0 * j == self.prize.0
+                    && self.a.1 * i + self.b.1 * j == self.prize.1
+                {
                     solutions.push((i, j));
                 }
             }
@@ -76,9 +81,7 @@ impl Prize {
 
 // Function to solve a system of 2 int linear equations
 // Provided by ChatGPT
-fn solve_eq(a1: Int, b1: Int, c1: Int,
-            a2: Int, b2: Int, c2: Int) -> Option<(Int, Int)> {
-
+fn solve_eq(a1: Int, b1: Int, c1: Int, a2: Int, b2: Int, c2: Int) -> Option<(Int, Int)> {
     // Calculate the determinant (denominator)
     let denominator = a1 * b2 - a2 * b1;
 
@@ -119,16 +122,18 @@ fn main() {
     // enlarge the prizes for part 2
     let big_prizes: Vec<_> = prizes
         .iter()
-        .map(|p| {
-            Prize {
-                a: p.a,
-                b: p.b,
-                prize: (p.prize.0 + 10000000000000, p.prize.1 + 10000000000000)
-            }
+        .map(|p| Prize {
+            a: p.a,
+            b: p.b,
+            prize: (p.prize.0 + 10000000000000, p.prize.1 + 10000000000000),
         })
         .collect();
 
-    let big_total: Int = big_prizes.iter().map(|x| x.solve_with_math()).flatten().sum();
+    let big_total: Int = big_prizes
+        .iter()
+        .map(|x| x.solve_with_math())
+        .flatten()
+        .sum();
 
     println!("Part 2, total cost: {}", big_total);
 }
