@@ -21,7 +21,7 @@ pub fn count_frequencies(numbers: &[i32]) -> HashMap<i32, usize> {
     frequency_map
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum Direction {
     North,
     South,
