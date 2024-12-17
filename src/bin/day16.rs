@@ -48,8 +48,8 @@ fn main() {
 
 
 
-    let lines = util::get_lines_from_file("input/day16-test.txt");
-    // let lines = util::get_lines_from_file("input/day16.txt");
+    // let lines = util::get_lines_from_file("input/day16-test.txt");
+    let lines = util::get_lines_from_file("input/day16.txt");
 
 
     let maze = Maze { lines };
@@ -101,7 +101,7 @@ fn astar(maze: &Maze) -> Option<Vec<Point>> {
             if !came_from.contains_key(&curr) {
                 // we're done, should be back at the start now
                 // dbg!(path);
-                println!("Path length: {}", path.len());
+                println!("Path length: {}", path.len() - 1);
                 break;
             }
 
@@ -128,8 +128,8 @@ fn astar(maze: &Maze) -> Option<Vec<Point>> {
             // println!("{curr_cost}, {curr_node}");
             if curr_node == goal_node {
                 // technically don't need to do this, just need the cost
+                dbg!(cost_so_far.get(&goal_node));
                 return Some(rebuild_path(&goal_node, &came_from));
-                // dbg!(cost_so_far.get(&goal_node));
             }
 
             // TODO determine the direction we are "going"
@@ -143,8 +143,18 @@ fn astar(maze: &Maze) -> Option<Vec<Point>> {
 
             // TODO: update get_next_steps to return the cost as well,
             //       it will have to take current_direction as an arg
-            for neighbor in maze.get_next_steps(&curr_node) {
-                let new_cost = cost_so_far[&curr_node] + 1; // TODO update
+            for direction in Direction::all() {
+                let neighbor = direction.step(&curr_node);
+                if maze.get(&neighbor) == Some('#') {
+                    continue; // skip walls
+                }
+
+                let turn_penalty = if current_direction == direction {
+                    0
+                } else {
+                    1000
+                };
+                let new_cost = cost_so_far[&curr_node] + turn_penalty + 1;
 
                 // TODO I don't like this at all, surely a better way
                 // to adapt "if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]"
@@ -161,7 +171,27 @@ fn astar(maze: &Maze) -> Option<Vec<Point>> {
                     open_set.push((Reverse(priority), neighbor));
                     came_from.insert(neighbor, curr_node);
                 }
+
             }
+            // for neighbor in maze.get_next_steps(&curr_node) {
+            //     let new_cost = cost_so_far[&curr_node] + 1; // TODO update
+
+            //     // TODO I don't like this at all, surely a better way
+            //     // to adapt "if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]"
+            //     let mut cont = false;
+            //     if !cost_so_far.contains_key(&neighbor) {
+            //         cont = true;
+            //     } else if new_cost < *cost_so_far.get(&neighbor).unwrap() {
+            //         cont = true;
+            //     }
+            //     if cont {
+            //         cost_so_far.insert(neighbor, new_cost);
+            //         let priority = new_cost + heuristic(&neighbor, &goal_node);
+            //         // remember to make in min-heap, have to reverse priority
+            //         open_set.push((Reverse(priority), neighbor));
+            //         came_from.insert(neighbor, curr_node);
+            //     }
+            // }
         } else {
             break;
         }
